@@ -150,13 +150,14 @@ export class CreditCardManager {
     this.recordsTable.classList.add('oculto');
     this.showRecordsBtn.innerHTML = '<i class="fas fa-table"></i> Mostrar registros';
   }
-
+ // Cambiamos al modo edición
   eliminarRegistro(index) {
     const reg = this.registros[index];
     if (!reg) return;
     if (!confirm('¿Seguro que quieres eliminar este registro?')) return;
 
     // Marcamos como inactivo
+    
     this.registros[index].estado = 'INACTIVO';
     StorageManager.saveRegistros(this.registros);
     showAlert('Registro eliminado', 'success');
