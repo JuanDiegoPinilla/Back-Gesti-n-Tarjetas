@@ -88,17 +88,18 @@
       <i class="fas fa-credit-card" aria-hidden="true"></i>
       Número de tarjeta
     </label>
- <input
-  type="text"
-  id="numeroTarjeta"
-  name="numeroTarjeta"
-  placeholder="XXXX XXXX XXXX XXXX"
-  pattern="^(\d{4} ){3}\d{4}$"
-  title="Ingrese 16 dígitos, separados por espacios cada 4"
-  maxlength="19"
-  required
-  autocomplete="off"
-  aria-required="true">
+    <!-- El sistema validará automáticamente si su tarjeta es Visa, Mastercard u otra franquicia -->
+    <input
+      type="text"
+      id="numeroTarjeta"
+      name="numeroTarjeta"
+      placeholder="XXXX XXXX XXXX XXXX"
+      pattern="^(\d{4} ){3}\d{4}$"
+      title="El sistema validará automáticamente si su tarjeta es Visa, Mastercard u otra franquicia"
+      maxlength="19"
+      required
+      autocomplete="off"
+      aria-required="true">
 
   </div>
 
