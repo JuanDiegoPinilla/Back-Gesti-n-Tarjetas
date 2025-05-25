@@ -60,7 +60,7 @@ form.addEventListener('submit', e => {
   }
   // Le dejamos a CreditCardManager el resto de la lógica
 });
-
+//funcional
 inputVenc.addEventListener('input', e => {
   let v = e.target.value.replace(/\D/g, '').slice(0, 4);
   if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
