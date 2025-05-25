@@ -155,13 +155,21 @@ export class CreditCardManager {
     this.recordsTable.classList.add('oculto');
     this.showRecordsBtn.innerHTML = '<i class="fas fa-table"></i> Mostrar registros';
   }
-
+ // Cambiamos al modo edición
   eliminarRegistro(index) {
     const reg = this.registros[index];
     if (!reg) {
       showAlert('Registro no encontrado', 'error');
       return;
     }
+
+
+    // Marcamos como inactivo
+    
+    this.registros[index].estado = 'INACTIVO';
+    StorageManager.saveRegistros(this.registros);
+    showAlert('Registro eliminado', 'success');
+    this._renderTable();
 
     const confirmado = window.confirm(`¿Estás seguro que deseas eliminar la tarjeta de ${reg.nombre}?`);
 
@@ -174,5 +182,6 @@ export class CreditCardManager {
     } else {
       showAlert('Eliminación cancelada', 'info');
     }
+
   }
 }
