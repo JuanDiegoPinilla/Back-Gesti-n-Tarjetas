@@ -37,6 +37,8 @@ public class TarjetaServiceImpl implements TarjetaService {
     @Autowired
     private ModelMapper modelMapper;
 
+    /*Juan Diego Castro Pinilla
+    * Aca implementamos Correctamente el servicio donde guardaremos la informacion en la base de datos */
     @Transactional
     public void guardarTarjeta(TarjetaDTO dto) {
         Cliente cliente = clienteRepo.findById(Integer.valueOf(dto.getClienteId()))
