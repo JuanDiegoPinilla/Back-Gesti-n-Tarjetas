@@ -4,7 +4,7 @@
 export function validarFecha(fecha) {
   const regex = /^(0[1-9]|1[0-2])\/\d{2}$/;
   if (!regex.test(fecha)) return false;
-
+ 
   const [mes, aa] = fecha.split('/');
   const año = 2000 + parseInt(aa, 10);
   const vencimiento = new Date(año, mes, 0); // último día de mes
@@ -28,3 +28,4 @@ export function determinarFranquicia(numeroTarjeta) {
   if (raw.startsWith('3')) return 'AMERICAN EXPRESS';
   return 'OTRA';
 }
+// Valida que el cupo total sea mayor o igual al disponible
