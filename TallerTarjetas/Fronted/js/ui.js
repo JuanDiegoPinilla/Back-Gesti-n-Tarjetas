@@ -14,6 +14,7 @@ export function showAlert(message, type) {
   }, 2700);
 }
 
+//creamos mensajes de alerta
 function _crearElementoAlert() {
   const alertEl = document.createElement('div');
   alertEl.id = 'alert';

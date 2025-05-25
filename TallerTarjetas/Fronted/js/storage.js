@@ -4,6 +4,7 @@ export class StorageManager {
     return JSON.parse(localStorage.getItem('registros')) || [];
   }
 
+  //aca guardamos los registros
   static saveRegistros(registros) {
     localStorage.setItem('registros', JSON.stringify(registros));
   }
