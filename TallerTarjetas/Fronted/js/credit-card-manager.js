@@ -164,7 +164,9 @@ export class CreditCardManager {
     }
 
 
-    // Marcamos como inactivo
+    // Confirmación de eliminación
+    // Cambios el estado a INACTIVO
+    // y guardo en el localStorage
     
     this.registros[index].estado = 'INACTIVO';
     StorageManager.saveRegistros(this.registros);
