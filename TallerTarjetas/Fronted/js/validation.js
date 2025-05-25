@@ -10,6 +10,7 @@ export function validarFecha(fecha) {
   const vencimiento = new Date(año, mes, 0); // último día de mes
   return vencimiento >= new Date();
 }
+// Valida que el cupo total y disponible sean numéricos
 
 // Comprueba duplicados quitando espacios
 export function isTarjetaDuplicada(registros, numeroTarjeta) {

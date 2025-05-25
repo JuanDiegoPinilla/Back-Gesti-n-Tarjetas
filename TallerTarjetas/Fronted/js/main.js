@@ -1,7 +1,8 @@
 // main.js
 import { CreditCardManager } from './credit-card-manager.js';
 import { validarFecha } from './validation.js';
-
+// nuevos cambios a realizar
+// 1) Crear una instancia de CreditCardManager
 const app = new CreditCardManager();
 window.app = app;
 // Pasos del script
