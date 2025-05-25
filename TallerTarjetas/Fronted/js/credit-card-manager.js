@@ -35,6 +35,7 @@ export class CreditCardManager {
       : '<i class="fas fa-times"></i> Ocultar registros';
   }
 
+  //Se conecta con la Bd y se crea correctamente
   _handleSubmit(e) {
     e.preventDefault();
 
@@ -137,7 +138,7 @@ export class CreditCardManager {
         }
       });
   }
-
+//Se registra correctamente
   editarRegistro(index) {
     const reg = this.registros[index];
     if (!reg) return;
