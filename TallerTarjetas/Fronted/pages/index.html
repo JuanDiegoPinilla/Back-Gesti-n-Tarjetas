@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Tarjetas de Crédito</title>
+  <link rel="stylesheet" href="../../Fronted/Styles/estilo.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png"
+           alt="Icono de tarjeta NFC"
+           class="icono-header">
+      <div class="header-text">
+        <h1>Gestión de Tarjetas de Crédito</h1>
+        <p>Sistema de registro y consulta de clientes</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="form-section">
+<form id="formularioRegistro" action="#" method="post">
+  <fieldset>
+    <legend>Datos del Cliente</legend>
+
+    <div class="form-group">
+      <label for="idCliente">
+        <i class="fas fa-id-card" aria-hidden="true"></i>
+        Identificación
+      </label>
+    <input
+    type="text"
+    id="idCliente"
+    name="idCliente"
+    maxlength="10"
+    inputmode="numeric"
+    placeholder="12345678"
+    pattern="^[0-9]+$"
+    title="Solo dígitos"
+    required
+    autocomplete="off"
+    aria-required="true">
+    </div>
+
+    <div class="form-group">
+      <label for="nombreCliente">
+        <i class="fas fa-user" aria-hidden="true"></i>
+        Nombre completo
+      </label>
+      <input
+        type="text"
+        id="nombreCliente"
+        name="nombreCliente"
+        placeholder="Juan Pérez"
+        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+        title="Solo letras y espacios"
+        required
+        autocomplete="name"
+        aria-required="true">
+    </div>
+
+    <div class="form-group">
+      <label for="correoCliente">
+        <i class="fas fa-envelope" aria-hidden="true"></i>
+        Correo electrónico
+      </label>
+      <input
+        type="email"
+        id="correoCliente"
+        name="correoCliente"
+        placeholder="ejemplo@dominio.com"
+        required
+        autocomplete="email"
+        aria-required="true">
+    </div>
+  </fieldset>
+
+  <fieldset>
+  <legend>Datos de la Tarjeta</legend>
+
+  <div class="form-group">
+    <label for="numeroTarjeta">
+      <i class="fas fa-credit-card" aria-hidden="true"></i>
+      Número de tarjeta
+    </label>
+ <input
+  type="text"
+  id="numeroTarjeta"
+  name="numeroTarjeta"
+  placeholder="XXXX XXXX XXXX XXXX"
+  pattern="^(\d{4} ){3}\d{4}$"
+  title="Ingrese 16 dígitos, separados por espacios cada 4"
+  maxlength="19"
+  required
+  autocomplete="off"
+  aria-required="true">
+
+  </div>
+
+  <div class="form-group date-picker">
+    <label for="vencimientoTarjeta">
+      <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+      Vencimiento (MM/AA)
+    </label>
+    <div class="input-with-icon" onclick="document.getElementById('vencimientoTarjeta').focus()">
+  <input
+    type="text"
+    id="vencimientoTarjeta"
+    name="vencimientoTarjeta"
+    placeholder="MM/AA"
+    pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+    title="Formato MM/AA (ej: 08/27 para agosto 2027)"
+    maxlength="5"
+    required>
+
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="cupoTotal">
+      <i class="fas fa-wallet" aria-hidden="true"></i>
+      Cupo total (COP)
+    </label>
+    <input
+    type="text"
+    id="cupoTotal"
+    name="cupoTotal"
+    inputmode="numeric"
+    maxlength="12"
+    placeholder="0"
+    required
+    autocomplete="off"
+    aria-required="true">
+
+  </div>
+
+  <div class="form-group">
+    <label for="cupoDisponible">
+      <i class="fas fa-coins" aria-hidden="true"></i>
+      Cupo disponible (COP)
+    </label>
+   <input
+    type="text"
+    id="cupoDisponible"
+    name="cupoDisponible"
+    inputmode="numeric"
+    maxlength="12"
+    placeholder="0"
+    required
+    autocomplete="off"
+   aria-required="true">
+
+  </div>
+
+  <p class="form-note">
+    <strong>Franquicia, estado y cupo utilizado se calcularán automáticamente.</strong>
+  </p>
+</fieldset>
+
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+      <i class="fas fa-save" aria-hidden="true"></i>
+      Guardar registro
+    </button>
+  </div>
+</form>
+
+    </section>
+
+    <section class="table-section">
+      <button
+        type="button"
+        id="showRecords"
+        class="btn boton-nuevo"
+        aria-expanded="false">
+        <i class="fas fa-table" aria-hidden="true"></i>
+        Mostrar registros
+      </button>
+
+      <table id="tablaRegistros" class="oculto">
+        <thead>
+          <tr>
+            <th>Identificación</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Número</th>
+            <th>Vencimiento</th>
+            <th>Franquicia</th>
+            <th>Cupo total</th>
+            <th>Cupo disponible</th>
+            <th>Cupo utilizado</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Registros dinámicos aquí -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - Proyecto Integrador ISW-1 | Universidad El Bosque</p>
+  </footer>
+
+  <!-- Módulos JS -->
+<script src="../js/credit-card-manager.js" type="module"></script>
+<script src="../js/main.js"                type="module"></script>
+<script src="../js/storage.js"             type="module"></script>
+<script src="../js/ui.js"                  type="module"></script>
+<script src="../js/utils.js"               type="module"></script>
+
+  
+<script>
+  function mostrarTabla() {
+    const tabla = document.getElementById("tablaRegistros");
+    tabla.classList.toggle("oculto");
+  }
+
+  function guardarRegistro() {
+    alert("Aquí va el código JS que maneja el registro");
+  }  
+</script>
+
+</body>
+</html>
