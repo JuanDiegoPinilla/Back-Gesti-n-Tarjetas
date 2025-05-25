@@ -4,7 +4,7 @@ import { validarFecha } from './validation.js';
 
 const app = new CreditCardManager();
 window.app = app;
-
+// Pasos del script
 // 1) Número de tarjeta: bloques de 4 dígitos con espacios
 const inputTarjeta = document.getElementById('numeroTarjeta');
 inputTarjeta.addEventListener('input', e => {
