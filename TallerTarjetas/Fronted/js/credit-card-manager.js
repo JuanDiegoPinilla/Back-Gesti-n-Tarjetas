@@ -12,8 +12,9 @@ export class CreditCardManager {
     this.tableBody = document.getElementById('tablaRegistros').querySelector('tbody');
     this.showRecordsBtn = document.getElementById('showRecords');
     this.recordsTable = document.getElementById('tablaRegistros');
+    this.toggleInactivosCheckbox = document.getElementById('mostrarInactivos');
 
-    this.editingIndex = null;   // <— Índice del registro que estamos editando
+    this.editingIndex = null;
 
     this._initEventListeners();
     this._renderTable();
@@ -22,6 +23,9 @@ export class CreditCardManager {
   _initEventListeners() {
     this.form.addEventListener('submit', e => this._handleSubmit(e));
     this.showRecordsBtn.addEventListener('click', () => this._toggleTable());
+    if (this.toggleInactivosCheckbox) {
+      this.toggleInactivosCheckbox.addEventListener('change', () => this._renderTable());
+    }
   }
 
   _toggleTable() {
@@ -34,7 +38,6 @@ export class CreditCardManager {
   _handleSubmit(e) {
     e.preventDefault();
 
-    // Recogemos valores del form
     const data = {
       clienteId:      document.getElementById('idCliente').value,
       nombre:         document.getElementById('nombreCliente').value,
@@ -47,7 +50,6 @@ export class CreditCardManager {
       fechaRegistro:  new Date().toISOString()
     };
 
-    // Validaciones básicas
     if (!validarFecha(data.fechaVencimiento)) {
       showAlert('Formato de fecha inválido o expirado', 'error');
       return;
@@ -57,32 +59,27 @@ export class CreditCardManager {
       return;
     }
 
-    // Si estamos creando nuevo, comprobamos duplicado
     if (this.editingIndex === null && isTarjetaDuplicada(this.registros, data.numeroTarjeta)) {
       showAlert('El número de tarjeta ya existe', 'error');
       return;
     }
 
-    // Cálculos
     data.franquicia = determinarFranquicia(data.numeroTarjeta);
     data.cupoUtilizado = data.cupoTotal - data.cupoDisponible;
 
     if (this.editingIndex !== null) {
-      // ——— MODO EDICIÓN ———
-      this.registros[this.editingIndex] = { 
-        ...this.registros[this.editingIndex], 
-        ...data 
+      this.registros[this.editingIndex] = {
+        ...this.registros[this.editingIndex],
+        ...data
       };
       showAlert('Registro actualizado', 'success');
       this.submitBtn.textContent = 'Guardar registro';
       this.editingIndex = null;
     } else {
-      // ——— MODO CREACIÓN ———
       this.registros.unshift(data);
       showAlert('Registro guardado', 'success');
     }
 
-    // Guardamos y refrescamos
     StorageManager.saveRegistros(this.registros);
     this._renderTable();
     this.form.reset();
@@ -90,7 +87,12 @@ export class CreditCardManager {
 
   _renderTable() {
     this.tableBody.innerHTML = '';
+
+    const mostrarInactivos = this.toggleInactivosCheckbox?.checked ?? false;
+
     this.registros.forEach((reg, idx) => {
+      if (!mostrarInactivos && reg.estado === 'INACTIVO') return;
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${reg.clienteId}</td>
@@ -103,7 +105,7 @@ export class CreditCardManager {
         <td>$${formatMoney(reg.cupoDisponible)}</td>
         <td>${formatCupoUtilizado(reg.cupoTotal, reg.cupoDisponible)}</td>
         <td>
-          <span class="status-badge ${reg.estado==='ACTIVO'?'status-active':'status-inactive'}">
+          <span class="status-badge ${reg.estado === 'ACTIVO' ? 'status-active' : 'status-inactive'}">
             ${reg.estado}
           </span>
         </td>
@@ -114,37 +116,40 @@ export class CreditCardManager {
           <button class="delete-btn" data-idx="${idx}">
             <i class="fas fa-trash"></i>
           </button>
-        </td>`;
+        </td>
+      `;
       this.tableBody.appendChild(tr);
     });
 
-    // Asignamos listeners a todos los botones
     this.tableBody.querySelectorAll('.edit-btn')
-      .forEach(btn => btn.addEventListener('click', e => {
-        const i = parseInt(e.currentTarget.dataset.idx, 10);
-        this.editarRegistro(i);
-      }));
+      .forEach(btn => {
+        const i = parseInt(btn.dataset.idx, 10);
+        if (!isNaN(i)) {
+          btn.addEventListener('click', () => this.editarRegistro(i));
+        }
+      });
+
     this.tableBody.querySelectorAll('.delete-btn')
-      .forEach(btn => btn.addEventListener('click', e => {
-        const i = parseInt(e.currentTarget.dataset.idx, 10);
-        this.eliminarRegistro(i);
-      }));
+      .forEach(btn => {
+        const i = parseInt(btn.dataset.idx, 10);
+        if (!isNaN(i)) {
+          btn.addEventListener('click', () => this.eliminarRegistro(i));
+        }
+      });
   }
 
   editarRegistro(index) {
     const reg = this.registros[index];
     if (!reg) return;
 
-    // Rellenamos el formulario
-    document.getElementById('idCliente').value         = reg.clienteId;
-    document.getElementById('nombreCliente').value     = reg.nombre;
-    document.getElementById('correoCliente').value     = reg.email;
-    document.getElementById('numeroTarjeta').value     = formatTarjeta(reg.numeroTarjeta);
-    document.getElementById('vencimientoTarjeta').value= reg.fechaVencimiento;
-    document.getElementById('cupoTotal').value         = reg.cupoTotal;
-    document.getElementById('cupoDisponible').value    = reg.cupoDisponible;
+    document.getElementById('idCliente').value          = reg.clienteId;
+    document.getElementById('nombreCliente').value      = reg.nombre;
+    document.getElementById('correoCliente').value      = reg.email;
+    document.getElementById('numeroTarjeta').value      = formatTarjeta(reg.numeroTarjeta);
+    document.getElementById('vencimientoTarjeta').value = reg.fechaVencimiento;
+    document.getElementById('cupoTotal').value          = reg.cupoTotal;
+    document.getElementById('cupoDisponible').value     = reg.cupoDisponible;
 
-    // Cambiamos al modo edición
     this.editingIndex = index;
     this.submitBtn.innerHTML = '<i class="fas fa-save"></i> Actualizar';
     this.recordsTable.classList.add('oculto');
@@ -153,13 +158,21 @@ export class CreditCardManager {
 
   eliminarRegistro(index) {
     const reg = this.registros[index];
-    if (!reg) return;
-    if (!confirm('¿Seguro que quieres eliminar este registro?')) return;
+    if (!reg) {
+      showAlert('Registro no encontrado', 'error');
+      return;
+    }
 
-    // Marcamos como inactivo
-    this.registros[index].estado = 'INACTIVO';
-    StorageManager.saveRegistros(this.registros);
-    showAlert('Registro eliminado', 'success');
-    this._renderTable();
+    const confirmado = window.confirm(`¿Estás seguro que deseas eliminar la tarjeta de ${reg.nombre}?`);
+
+    if (confirmado) {
+      this.registros[index].estado = 'INACTIVO';
+      this.registros[index].fechaEliminacion = new Date().toISOString();
+      StorageManager.saveRegistros(this.registros);
+      showAlert('Registro marcado como eliminado', 'success');
+      this._renderTable();
+    } else {
+      showAlert('Eliminación cancelada', 'info');
+    }
   }
 }
